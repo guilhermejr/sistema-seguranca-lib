@@ -1,5 +1,6 @@
-package com.minha.lib.seguranca.security;
+package net.guilhermejr.sistema.seguranca.security;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+//@EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableWebSecurity
+@Log4j2
 public class WebSecurityConfig {
 
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
@@ -31,6 +33,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        log.info(" --------> ENTROU NO WEBSECURITYCONFIG <-------- ");
         http
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()

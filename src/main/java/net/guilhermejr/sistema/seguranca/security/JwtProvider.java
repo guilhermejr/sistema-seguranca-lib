@@ -1,9 +1,11 @@
-package com.minha.lib.seguranca.security;
+package net.guilhermejr.sistema.seguranca.security;
 
 import io.jsonwebtoken.*;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 public class JwtProvider {
 
@@ -23,15 +25,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
-            System.out.println("Assinatura JWT inválida: " + e.getMessage());
+            log.error("Assinatura JWT inválida: {}", e.getMessage());
         } catch (MalformedJwtException e) {
-            System.out.println("Token JWT inválido: " + e.getMessage());
+            log.error("Token JWT inválido: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            System.out.println("Token JWT expirado: " + e.getMessage());
+            log.error("Token JWT expirado: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            System.out.println("Token JWT não suportado: " + e.getMessage());
+            log.error("Token JWT não suportado: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty: " + e.getMessage());
+            log.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
     }

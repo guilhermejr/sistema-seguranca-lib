@@ -1,4 +1,4 @@
-package minha.lib.seguranca.security;
+package com.minha.lib.seguranca.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

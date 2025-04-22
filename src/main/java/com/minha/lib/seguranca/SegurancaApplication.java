@@ -1,4 +1,4 @@
-package minha.lib.seguranca;
+package com.minha.lib.seguranca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

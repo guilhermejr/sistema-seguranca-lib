@@ -1,6 +1,5 @@
-package minha.lib.seguranca.security;
+package com.minha.lib.seguranca.security;
 
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,16 +10,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class UserDetailsImpl implements UserDetails {
 
     private UUID id;
     private Collection<? extends GrantedAuthority> perfis;
+
+    public UserDetailsImpl(UUID id, List<GrantedAuthority> authorities) {
+    }
 
     public static UserDetailsImpl build(UUID id, String perfis) {
         List<GrantedAuthority> authorities = Arrays.stream(perfis.split(","))

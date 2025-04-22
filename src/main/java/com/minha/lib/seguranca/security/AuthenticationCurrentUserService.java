@@ -1,4 +1,4 @@
-package minha.lib.seguranca.security;
+package com.minha.lib.seguranca.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

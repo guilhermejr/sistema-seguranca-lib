@@ -1,13 +1,13 @@
 package net.guilhermejr.sistema.seguranca.security;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,35 +15,28 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-//@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableMethodSecurity
 @EnableWebSecurity
-@Log4j2
 public class WebSecurityConfig {
 
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
+    private final AccessDeniedHandlerImpl accessDeniedHandler;
+    private final AuthenticationJwtFilter authenticationJwtFilter;
 
-    public WebSecurityConfig(AuthenticationEntryPointImpl authenticationEntryPoint) {
+    public WebSecurityConfig(AuthenticationEntryPointImpl authenticationEntryPoint, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationJwtFilter authenticationJwtFilter) {
         this.authenticationEntryPoint = authenticationEntryPoint;
-    }
-
-    @Bean
-    public AuthenticationJwtFilter authenticationJwtFilter() {
-        return new AuthenticationJwtFilter();
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationJwtFilter = authenticationJwtFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.info(" --------> ENTROU NO WEBSECURITYCONFIG <-------- ");
         http
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .csrf().disable();
-        http.addFilterBefore(authenticationJwtFilter(), UsernamePasswordAuthenticationFilter.class);
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exc -> exc.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
+            .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
+            .addFilterBefore(authenticationJwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

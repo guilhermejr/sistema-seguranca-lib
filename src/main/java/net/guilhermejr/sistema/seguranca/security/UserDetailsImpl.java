@@ -22,12 +22,9 @@ public class UserDetailsImpl implements UserDetails {
     private UUID id;
     private Collection<? extends GrantedAuthority> perfis;
 
-    public UserDetailsImpl(UUID id, List<GrantedAuthority> authorities) {
-    }
-
     public static UserDetailsImpl build(UUID id, String perfis) {
         List<GrantedAuthority> authorities = Arrays.stream(perfis.split(","))
-                .map(perfil -> new SimpleGrantedAuthority(perfil))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return new UserDetailsImpl(id, authorities);
     }
